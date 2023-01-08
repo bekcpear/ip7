@@ -15,7 +15,8 @@ import (
 
 func NewRootCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "ip7 [flags] ip-address",
+		Use:   "ip7 [flags] ip-address",
+		Short: "An IP address checker, powered by MaxMind GeoLite2 databases.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			config.Initialize(cmd)
 			geolite2.Update()
