@@ -137,8 +137,12 @@ func Initialize(c *cobra.Command) {
 			Cfg.AutoUpdate = autoUpdateVal
 		}
 		for _, db := range Cfg.Databases {
-			if db.LicenseKey == "" && licKeyVal != "" {
-				db.LicenseKey = licKeyVal
+			if db.LicenseKey == "" {
+				if licKeyVal != "" {
+					db.LicenseKey = licKeyVal
+				} else if Cfg.LicenseKey != "" {
+					db.LicenseKey = Cfg.LicenseKey
+				}
 			}
 			if autoUpdate != nil && autoUpdate.Changed {
 				db.AutoUpdate = autoUpdateVal
