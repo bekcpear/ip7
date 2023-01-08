@@ -50,9 +50,12 @@ func getDatabase(c *config.GeoLite2DatabaseConfig) ([]byte, error) {
 	if t == nil {
 		return nil, fmt.Errorf("no tarball body")
 	}
-	realHash := sha256.Sum256(t)
-
 	hashTxt := get(fmt.Sprintf(config.Cfg.URLFmt+".sha256", c.Type, c.LicenseKey))
+	if hashTxt == nil {
+		return nil, fmt.Errorf("get hash sum failed")
+	}
+
+	realHash := sha256.Sum256(t)
 	hash := make([]byte, 32)
 	_, err := hex.Decode(hash, bytes.Split(hashTxt, []byte{' '})[0])
 	if err != nil {
