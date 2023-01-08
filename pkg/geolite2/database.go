@@ -1,9 +1,10 @@
 package geolite2
 
 import (
-	"ip7/pkg/config"
 	"log"
 	"net"
+
+	"oss.ac/ip7/pkg/config"
 
 	"github.com/oschwald/geoip2-golang"
 )

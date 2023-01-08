@@ -2,11 +2,12 @@ package geolite2
 
 import (
 	"encoding/json"
-	"ip7/pkg/config"
 	"log"
 	"os"
 	"path"
 	"time"
+
+	"oss.ac/ip7/pkg/config"
 )
 
 const cacheExpire = 7 * 24 * 60 * 60 // seconds, 7 days

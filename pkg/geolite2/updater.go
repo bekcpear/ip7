@@ -8,11 +8,12 @@ import (
 	"encoding/hex"
 	"fmt"
 	"io"
-	"ip7/pkg/config"
 	"log"
 	"net/http"
 	"regexp"
 	"time"
+
+	"oss.ac/ip7/pkg/config"
 
 	"github.com/bekcpear/hidepass/pkg/hidepass"
 	"github.com/oschwald/geoip2-golang"

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"ip7/internal/cmd/root"
 	"os"
+
+	"oss.ac/ip7/internal/cmd/root"
 )
 
 func main() {

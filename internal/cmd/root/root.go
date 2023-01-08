@@ -3,12 +3,13 @@ package root
 import (
 	"encoding/json"
 	"fmt"
-	"ip7/internal/cmd/serve"
-	"ip7/pkg/config"
-	"ip7/pkg/geolite2"
 	"log"
 	"net"
 	"strings"
+
+	"oss.ac/ip7/internal/cmd/serve"
+	"oss.ac/ip7/pkg/config"
+	"oss.ac/ip7/pkg/geolite2"
 
 	"github.com/spf13/cobra"
 )

@@ -1,8 +1,9 @@
 package geolite2
 
 import (
-	"ip7/pkg/config"
 	"testing"
+
+	"oss.ac/ip7/pkg/config"
 
 	"github.com/spf13/cobra"
 )

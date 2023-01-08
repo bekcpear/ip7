@@ -1,4 +1,4 @@
-module ip7
+module oss.ac/ip7
 
 go 1.19
 
