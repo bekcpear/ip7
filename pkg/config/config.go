@@ -91,7 +91,7 @@ func Initialize(c *cobra.Command) {
 	if urlFormat != nil && urlFormat.Changed {
 		urlFormatVal = urlFormat.Value.String()
 	}
-	if dbType != nil && dbType.Changed {
+	if dbType != nil {
 		dbTypeVal = dbType.Value.String()
 	}
 	if dbPath != nil && dbPath.Changed {

@@ -43,7 +43,7 @@ func NewRootCmd() *cobra.Command {
 
 	fs := cmd.PersistentFlags()
 	fs.SortFlags = false
-	fs.StringP("type", "t", "", "The type of GeoLite2 Database (ASN, City, Country)")
+	fs.StringP("type", "t", "City", "The type of GeoLite2 Database (ASN, City, Country)")
 	fs.StringP("database", "d", "", "The path to GeoLite2 Database (GeoIP2 Binary Format)")
 	fs.StringP("license-key", "k", "", "The License key which used to download all GeoLite2 databases,"+
 		"\n"+" it can also be get from env variables, 'IP7_LICENSE_KEY' or 'ip7_license_key', with a low priority,"+
