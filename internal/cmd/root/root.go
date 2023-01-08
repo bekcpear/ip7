@@ -7,6 +7,7 @@ import (
 	"net"
 	"strings"
 
+	"oss.ac/ip7/internal/cmd/genconfig"
 	"oss.ac/ip7/internal/cmd/serve"
 	"oss.ac/ip7/pkg/config"
 	"oss.ac/ip7/pkg/geolite2"
@@ -20,7 +21,11 @@ func NewRootCmd() *cobra.Command {
 		Short: "An IP address checker, powered by MaxMind GeoLite2 databases.",
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			config.Initialize(cmd)
-			geolite2.Update()
+			switch cmd.Name() {
+			case "genconfig", "help":
+			default:
+				geolite2.Update()
+			}
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) > 1 {
@@ -40,6 +45,7 @@ func NewRootCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(serve.NewServeCmd())
+	cmd.AddCommand(genconfig.NewGenConfigCmd())
 	cmd.CompletionOptions.HiddenDefaultCmd = true
 	cmd.Flags().SortFlags = false
 
