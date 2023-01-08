@@ -1,0 +1,36 @@
+# config file for /etc/init.d/ip7
+
+# execute user
+# default: ip7
+#IP7_USER=
+
+# execute group
+# default: ip7
+#IP7_GROUP=
+
+# config file
+# default: /etc/ip7/config.json
+#IP7_CONFIG=
+
+# working directory
+# default: /var/lib/ip7
+#IP7_WORK_DIR=
+
+# log directory
+# default: /var/log/ip7
+#IP7_LOG_DIR=
+
+# stdout log file
+# relative to log-directory
+# default: ip7.log
+#IP7_LOG_STDOUT=
+
+# stderr log file
+# relative to log-directory
+# default: ip7.log
+#IP7_LOG_STDERR=
+
+# extra arguments for ip7 serve
+# run `ip7 help serve` for help
+# default: <none>
+#IP7_EXTRA_ARGS=""

@@ -1,0 +1,13 @@
+[Unit]
+Description=IP address checker HTTP API service
+Wants=network.target
+After=network.target
+
+[Service]
+User=ip7
+Group=ip7
+ExecStart=/usr/bin/ip7 -c /etc/ip7/config.json serve
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

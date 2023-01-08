@@ -1,0 +1,15 @@
+{
+  "databases": [
+    {
+      "type": "ASN"
+    },
+    {
+      "type": "City"
+    },
+    {
+      "type": "Country"
+    }
+  ],
+  "autoUpdate": true,
+  "licenseKey": ""
+}

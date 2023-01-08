@@ -1,0 +1,32 @@
+#!/sbin/openrc-run
+# Copyright 2023 Gentoo Authors
+# Distributed under the terms of the GNU General Public License v2
+
+description="IP address checker HTTP API service"
+
+: ${IP7_USER:=ip7}
+: ${IP7_GROUP:=ip7}
+: ${IP7_CONFIG:=/etc/ip7/config.json}
+: ${IP7_WORK_DIR:=/var/lib/ip7}
+: ${IP7_LOG_DIR:=/var/log/ip7}
+: ${IP7_LOG_STDOUT:=ip7.log}
+: ${IP7_LOG_STDERR:=ip7.log}
+
+command="/usr/bin/ip7"
+command_args="${IP7_CONFIG:+-c} ${IP7_CONFIG} serve ${IP7_EXTRA_ARGS}"
+command_background=true
+pidfile="/run/ip7.pid"
+command_user="${IP7_USER}:${IP7_GROUP}"
+directory="${IP7_WORK_DIR}"
+output_log="${IP7_LOG_DIR%/}/${IP7_LOG_STDOUT}"
+error_log="${IP7_LOG_DIR%/}/${IP7_LOG_STDERR}"
+
+depend() {
+	need net
+}
+
+start_pre() {
+	checkpath -d -m 700 -o "${command_user}" \
+		${IP7_WORK_DIR} \
+		${IP7_LOG_DIR}
+}
