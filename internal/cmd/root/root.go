@@ -28,12 +28,12 @@ func NewRootCmd() *cobra.Command {
 			}
 		},
 		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) > 1 {
-				log.Printf("only one IP address per query, ignore %s\n", strings.Join(args[1:], ","))
-			}
 			ip := net.ParseIP(args[0])
 			if ip == nil {
 				log.Fatalf("%s is not an IP address\n", args[0])
+			}
+			if len(args) > 1 {
+				log.Printf("only one IP address per query, ignore %s\n", strings.Join(args[1:], ","))
 			}
 			rr, err := json.Marshal(geolite2.Query(ip))
 			if err != nil {
