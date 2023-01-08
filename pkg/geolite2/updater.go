@@ -14,12 +14,13 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/bekcpear/hidepass/pkg/hidepass"
 	"github.com/oschwald/geoip2-golang"
 )
 
 func get(url string) []byte {
 	cli := http.DefaultClient
-	log.Printf("getting %s ...\n", url)
+	log.Println(hidepass.Hide(fmt.Sprintf("getting %s ...\n", url)))
 	resp, err := cli.Get(url)
 	if err != nil {
 		log.Println(err)

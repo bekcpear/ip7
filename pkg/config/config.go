@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/bekcpear/hidepass/pkg/hidepass"
 	"github.com/spf13/cobra"
 )
 
@@ -61,72 +62,85 @@ func Initialize(c *cobra.Command) {
 		urlFormat  = fs.Lookup("url-format")
 		configFile = fs.Lookup("config")
 	)
+	var (
+		dbTypeVal     string
+		dbPathVal     string
+		licKeyVal     string
+		autoUpdateVal bool
+		urlFormatVal  = URLFmt
+	)
 
-	if !licKey.Changed {
-		for _, k := range []string{"IP7_LICENSE_KEY", "ip7_license_key"} {
-			key := os.Getenv(k)
-			if key != "" {
-				err := licKey.Value.Set(key)
-				if err != nil {
-					log.Fatalln(err)
+	if licKey != nil {
+		if !licKey.Changed {
+			for _, k := range []string{"IP7_LICENSE_KEY", "ip7_license_key"} {
+				key := os.Getenv(k)
+				if key != "" {
+					licKeyVal = key
+					err := licKey.Value.Set(key)
+					if err != nil {
+						log.Fatalln(err)
+					}
+					break
 				}
-				break
 			}
+		} else {
+			licKeyVal = licKey.Value.String()
 		}
 	}
 
-	if !urlFormat.Changed {
-		err := urlFormat.Value.Set(URLFmt)
-		if err != nil {
-			log.Fatalln(err)
-		}
+	if urlFormat != nil && urlFormat.Changed {
+		urlFormatVal = urlFormat.Value.String()
+	}
+	if dbType != nil && dbType.Changed {
+		dbTypeVal = dbType.Value.String()
+	}
+	if dbPath != nil && dbPath.Changed {
+		dbPathVal = dbPath.Value.String()
+	}
+	if autoUpdate != nil && autoUpdate.Changed {
+		autoUpdateVal, _ = fs.GetBool(autoUpdate.Name)
 	}
 
-	if configFile.Changed {
+	if configFile != nil && configFile.Changed {
 		var err error
 		Cfg, err = parseConfigFile(configFile.Value.String())
 		if err != nil {
 			log.Fatalln(err)
 		}
-		if dbPath.Changed {
+		if dbPath != nil && dbPath.Changed {
 			log.Println("a database is specified through the command line argument, skipping the databases config within the config file")
 			Cfg.Databases = []*GeoLite2DatabaseConfig{&GeoLite2DatabaseConfig{
-				Type: dbType.Value.String(),
-				Path: dbPath.Value.String(),
+				Type: dbTypeVal,
+				Path: dbPathVal,
 			}}
 		}
 	} else {
 		Cfg = &Config{
 			Databases: []*GeoLite2DatabaseConfig{&GeoLite2DatabaseConfig{
-				Type: dbType.Value.String(),
-				Path: dbPath.Value.String(),
+				Type: dbTypeVal,
+				Path: dbPathVal,
 			}},
-			LicenseKey: licKey.Value.String(),
-			URLFmt:     urlFormat.Value.String(),
+			LicenseKey: licKeyVal,
+			URLFmt:     urlFormatVal,
+			AutoUpdate: autoUpdateVal,
 		}
-		Cfg.AutoUpdate, _ = fs.GetBool(autoUpdate.Name)
 	}
 
 	if Cfg != nil {
-		autoUpdateVal, _ := fs.GetBool(autoUpdate.Name)
-		licKeyVal, _ := fs.GetString(licKey.Name)
 		if Cfg.LicenseKey == "" && licKeyVal != "" {
 			Cfg.LicenseKey = licKeyVal
 		}
-		if Cfg.URLFmt == "" {
-			Cfg.URLFmt = URLFmt
+		if Cfg.URLFmt == "" || (urlFormat != nil && urlFormat.Changed) {
+			Cfg.URLFmt = urlFormatVal
 		}
-		if urlFormat.Changed {
-			Cfg.URLFmt = urlFormat.Value.String()
-		}
-		if autoUpdate.Changed {
+		if autoUpdate != nil && autoUpdate.Changed {
 			Cfg.AutoUpdate = autoUpdateVal
 		}
 		for _, db := range Cfg.Databases {
 			if db.LicenseKey == "" && licKeyVal != "" {
 				db.LicenseKey = licKeyVal
 			}
-			if autoUpdate.Changed {
+			if autoUpdate != nil && autoUpdate.Changed {
 				db.AutoUpdate = autoUpdateVal
 			}
 		}
@@ -139,5 +153,10 @@ func Initialize(c *cobra.Command) {
 		}
 	} else {
 		log.Fatalln("initial configurations failed")
+	}
+
+	err := hidepass.SetConfig([]byte(`{"regex": ["(?:license_key=)([a-zA-Z0-9_~\\.-]+)(?:&suffix=)"]}`))
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
