@@ -1,7 +1,6 @@
 package genconfig
 
 import (
-	"bytes"
 	"encoding/json"
 	"log"
 	"os"
@@ -15,16 +14,11 @@ func NewGenConfigCmd() *cobra.Command {
 		Use:   "genconfig",
 		Short: "generate an example configuration",
 		Run: func(cmd *cobra.Command, args []string) {
-			c, err := json.Marshal(config.Cfg)
+			c, err := json.MarshalIndent(config.Cfg, "", "  ")
 			if err != nil {
 				log.Fatalln(err)
 			}
-			o := new(bytes.Buffer)
-			err = json.Indent(o, c, "", "  ")
-			if err != nil {
-				log.Fatalln(err)
-			}
-			_, err = o.WriteTo(os.Stdout)
+			_, err = os.Stdout.Write(c)
 			if err != nil {
 				log.Fatalln(err)
 			}
