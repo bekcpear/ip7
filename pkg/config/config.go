@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"os"
@@ -21,6 +22,26 @@ type GeoLite2DatabaseConfig struct {
 	LicenseKey string `json:"licenseKey"`
 }
 
+func (g *GeoLite2DatabaseConfig) UnmarshalJSON(b []byte) error {
+	type conf GeoLite2DatabaseConfig
+	var c conf
+	err := json.Unmarshal(b, &c)
+	if err != nil {
+		return err
+	}
+
+	g.Type = c.Type
+	g.Path = c.Path
+	g.LicenseKey = c.LicenseKey
+	if bytes.Contains(b, []byte(`"autoUpdate":`)) {
+		g.AutoUpdate = c.AutoUpdate
+	} else {
+		g.AutoUpdate = Cfg.AutoUpdate
+	}
+
+	return nil
+}
+
 type Config struct {
 	Databases  []*GeoLite2DatabaseConfig `json:"databases"`
 	AutoUpdate bool                      `json:"autoUpdate"`
@@ -29,11 +50,36 @@ type Config struct {
 	CacheDir   string                    `json:"cacheDir"`
 }
 
+func (g *Config) UnmarshalJSON(b []byte) error {
+	type check struct {
+		AutoUpdate bool `json:"autoUpdate"`
+	}
+	var k check
+	err := json.Unmarshal(b, &k)
+	if err != nil {
+		return err
+	}
+	Cfg.AutoUpdate = k.AutoUpdate
+
+	type conf Config
+	var c conf
+	err = json.Unmarshal(b, &c)
+	if err != nil {
+		return err
+	}
+	g.Databases = c.Databases
+	g.AutoUpdate = c.AutoUpdate
+	g.LicenseKey = c.LicenseKey
+	g.URLFmt = c.URLFmt
+	g.CacheDir = c.CacheDir
+	return nil
+}
+
 // Cfg is the global configuration variable through the entire program,
 // it stores the all GeoLite2 database configurations, including Type and
 // LicenseKey.
 // You should call Initialize function first to initialize this variable.
-var Cfg *Config
+var Cfg = new(Config)
 
 func parseConfigFile(file string) (*Config, error) {
 	r, err := os.ReadFile(file)
